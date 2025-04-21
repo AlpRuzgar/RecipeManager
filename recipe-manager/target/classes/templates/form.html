@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${recipe.id != null ? 'Edit Recipe' : 'New Recipe'}"></title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoFGhxRCap+u9gqE1Z+u6U6U0E5q3WMQVhZ8WvCWPIPm49"
+    crossorigin="anonymous"/>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  
+  <style>
+    .form-header {
+      background-color: #f8f9fa;
+      padding: 2rem 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      background-color: white;
+    }
+    .form-label {
+      font-weight: 500;
+    }
+    .form-floating {
+      margin-bottom: 1.5rem;
+    }
+    .difficulty-easy { color: #28a745; }
+    .difficulty-medium { color: #ffc107; }
+    .difficulty-hard { color: #dc3545; }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .btn-lg {
+      padding: 0.75rem 1.5rem;
+    }
+    .input-group-text {
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" th:href="@{/recipes}"><i class="fas fa-utensils me-2"></i>Recipe Manager</a>
+    </div>
+  </nav>
+
+  <header class="form-header">
+    <div class="container text-center">
+      <h1 class="display-5" th:text="${recipe.id != null ? 'Edit Recipe' : 'Create New Recipe'}"></h1>
+      <p class="lead" th:text="${recipe.id != null ? 'Update your recipe details' : 'Add a new recipe to your collection'}"></p>
+    </div>
+  </header>
+
+  <div class="container mb-5">
+    <div class="form-container">
+      <form th:action="@{/recipes}" th:object="${recipe}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" th:field="*{id}" />
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-tag me-1"></i> Recipe Name</label>
+          <input class="form-control form-control-lg" type="text" th:field="*{name}" placeholder="Enter recipe name" required/>
+          <div class="invalid-feedback">
+            Please provide a recipe name.
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-clock me-1"></i> Cooking Time</label>
+          <div class="input-group">
+            <input class="form-control" type="number" th:field="*{cookingTime}" required placeholder="Time needed to prepare"/>
+            <span class="input-group-text">minutes</span>
+            <div class="invalid-feedback">
+              Please specify cooking time.
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-list-ul me-1"></i> Ingredients</label>
+          <textarea class="form-control" th:field="*{ingredients}" rows="5" placeholder="List all ingredients (one per line)"></textarea>
+          <small class="form-text text-muted">Enter each ingredient on a new line, with quantities if applicable.</small>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-chart-bar me-1"></i> Difficulty Level</label>
+          <select class="form-select" th:field="*{difficulty}">
+            <option value="Easy">Easy <i class="fas fa-smile"></i></option>
+            <option value="Medium">Medium <i class="fas fa-meh"></i></option>
+            <option value="Hard">Hard <i class="fas fa-frown"></i></option>
+          </select>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+          <a th:href="@{/recipes}" class="btn btn-outline-secondary me-md-2">
+            <i class="fas fa-times me-1"></i> Cancel
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Save Recipe
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Form validation script -->
+  <script>
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all forms to apply validation
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over each form and prevent submission if fields are invalid
+        Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+  </script>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
