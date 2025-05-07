@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${recipe.id != null ? 'Edit Recipe' : 'New Recipe'}"></title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoFGhxRCap+u9gqE1Z+u6U6U0E5q3WMQVhZ8WvCWPIPm49"
+    crossorigin="anonymous"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  
+  <style>
+    :root {
+      --primary-color: #ff7043;
+      --primary-dark: #e64a19;
+      --primary-light: #ffccbc;
+      --accent-color: #4caf50;
+      --text-primary: #333333;
+      --text-secondary: #757575;
+      --bg-light: #f5f7fa;
+      --bg-white: #ffffff;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --transition: all 0.3s ease;
+      --danger-color: #dc3545;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: var(--text-primary);
+      background-color: var(--bg-light);
+      line-height: 1.6;
+    }
+    
+    .navbar {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      box-shadow: var(--shadow);
+      padding: 0.8rem 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.25rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .navbar-brand i {
+      color: #fff;
+      font-size: 1.4rem;
+      vertical-align: middle;
+    }
+    
+    .form-header {
+      background: linear-gradient(180deg, var(--bg-light) 0%, rgba(245, 247, 250, 0.8) 100%);
+      padding: 3rem 0 2rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    
+    .form-header h1 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary-dark);
+    }
+    
+    .form-header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+    
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto 4rem;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      background-color: var(--bg-white);
+      position: relative;
+      transition: var(--transition);
+    }
+    
+    .form-container:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    
+    .form-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    
+    .form-control, .form-select {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      transition: var(--transition);
+      color: var(--text-primary);
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    
+    .form-control-lg {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+    
+    .form-text {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+    
+    .input-group-text {
+      background-color: #f1f3f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: var(--transition);
+      text-transform: uppercase;
+      font-size: 0.875rem;
+    }
+    
+    .btn-success {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+    
+    .btn-success:hover {
+      background-color: #43a047;
+      border-color: #43a047;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+    }
+    
+    .btn-outline-secondary {
+      color: var(--text-secondary);
+      border-color: #d1d1d1;
+    }
+    
+    .btn-outline-secondary:hover {
+      background-color: #f1f3f5;
+      color: var(--text-primary);
+    }
+    
+    .form-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background-color: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 50%;
+      margin-right: 0.75rem;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .difficulty-option {
+      position: relative;
+      display: inline-block;
+      margin-right: 1rem;
+    }
+    
+    .difficulty-radio {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .difficulty-label {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .difficulty-icon {
+      margin-left: 0.5rem;
+      font-size: 1.2rem;
+    }
+    
+    .difficulty-easy .difficulty-icon { color: #28a745; }
+    .difficulty-medium .difficulty-icon { color: #ffc107; }
+    .difficulty-hard .difficulty-icon { color: #dc3545; }
+    
+    .difficulty-radio:checked + .difficulty-label {
+      border-color: var(--primary-color);
+      background-color: var(--primary-light);
+    }
+    
+    .drag-area {
+      border: 2px dashed #d1d1d1;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+    
+    .drag-area:hover {
+      border-color: var(--primary-color);
+      background-color: rgba(255, 112, 67, 0.03);
+    }
+    
+    .drag-icon {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    
+    .drag-text {
+      color: var(--text-secondary);
+    }
+    
+    .instructions-area {
+      border-left: 3px solid var(--primary-light);
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    
+    .instructions-area::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+    }
+    
+    .text-danger {
+      color: var(--danger-color) !important;
+      font-size: 0.85rem;
+      margin-top: 0.4rem;
+      font-weight: 500;
+      display: block;
+    }
+    
+    .error-icon {
+      margin-right: 5px;
+    }
+    
+    .has-error .form-control {
+      border-color: var(--danger-color);
+    }
+    
+    .has-error .input-group-text {
+      border-color: var(--danger-color);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" th:href="@{/recipes}">
+        <i class="fas fa-utensils me-2"></i>Recipe Manager
+      </a>
+    </div>
+  </nav>
+
+  <header class="form-header">
+    <div class="container">
+      <h1 class="display-5" th:text="${recipe.id != null ? 'Edit Recipe' : 'Create New Recipe'}"></h1>
+      <p class="lead" th:text="${recipe.id != null ? 'Update your recipe details' : 'Add a new recipe to your collection'}"></p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="form-container">
+      <form th:action="@{/recipes}" th:object="${recipe}" method="post" class="needs-validation" novalidate>
+        <input type="hidden" th:field="*{id}" />
+        
+        <div class="form-group" th:classappend="${#fields.hasErrors('name')} ? 'has-error' : ''">
+          <div class="section-title">
+            <span class="form-icon"><i class="fas fa-tag"></i></span>
+            Recipe Details
+          </div>
+          <label class="form-label">Recipe Name</label>
+          <input class="form-control form-control-lg" type="text" th:field="*{name}" placeholder="Enter recipe name" required/>
+          <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+            <i class="fas fa-exclamation-circle error-icon"></i><span th:errors="*{name}"></span>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group" th:classappend="${#fields.hasErrors('cookingTime')} ? 'has-error' : ''">
+              <label class="form-label">Cooking Time</label>
+              <div class="input-group">
+                <input class="form-control" type="number" th:field="*{cookingTime}" required placeholder="Time needed to prepare"/>
+                <span class="input-group-text">minutes</span>
+              </div>
+              <div th:if="${#fields.hasErrors('cookingTime')}" class="text-danger">
+                <i class="fas fa-exclamation-circle error-icon"></i><span th:errors="*{cookingTime}"></span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="form-group" th:classappend="${#fields.hasErrors('difficulty')} ? 'has-error' : ''">
+              <label class="form-label">Difficulty Level</label>
+              <div>
+                <div class="difficulty-option">
+                  <input type="radio" name="difficulty" id="easy" value="Easy" class="difficulty-radio" th:field="*{difficulty}"/>
+                  <label for="easy" class="difficulty-label difficulty-easy">
+                    Easy <i class="fas fa-smile difficulty-icon"></i>
+                  </label>
+                </div>
+                <div class="difficulty-option">
+                  <input type="radio" name="difficulty" id="medium" value="Medium" class="difficulty-radio" th:field="*{difficulty}"/>
+                  <label for="medium" class="difficulty-label difficulty-medium">
+                    Medium <i class="fas fa-meh difficulty-icon"></i>
+                  </label>
+                </div>
+                <div class="difficulty-option">
+                  <input type="radio" name="difficulty" id="hard" value="Hard" class="difficulty-radio" th:field="*{difficulty}"/>
+                  <label for="hard" class="difficulty-label difficulty-hard">
+                    Hard <i class="fas fa-frown difficulty-icon"></i>
+                  </label>
+                </div>
+              </div>
+              <div th:if="${#fields.hasErrors('difficulty')}" class="text-danger">
+                <i class="fas fa-exclamation-circle error-icon"></i><span th:errors="*{difficulty}"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group" th:classappend="${#fields.hasErrors('ingredients')} ? 'has-error' : ''">
+          <div class="section-title">
+            <span class="form-icon"><i class="fas fa-list-ul"></i></span>
+            Ingredients
+          </div>
+          <textarea class="form-control" th:field="*{ingredients}" rows="5" placeholder="List all ingredients (one per line)"></textarea>
+          <small class="form-text text-muted">Enter each ingredient on a new line, with quantities if applicable.</small>
+          <div th:if="${#fields.hasErrors('ingredients')}" class="text-danger">
+            <i class="fas fa-exclamation-circle error-icon"></i><span th:errors="*{ingredients}"></span>
+          </div>
+        </div>
+        
+        <div class="form-group" th:classappend="${#fields.hasErrors('description')} ? 'has-error' : ''">
+          <div class="section-title">
+            <span class="form-icon"><i class="fas fa-steps"></i></span>
+            Instructions
+          </div>
+          <div class="instructions-area">
+            <textarea class="form-control" th:field="*{description}" rows="6" placeholder="Describe the cooking steps in detail..."></textarea>
+            <small class="form-text text-muted">Be clear and specific with your instructions.</small>
+            <div th:if="${#fields.hasErrors('description')}" class="text-danger">
+              <i class="fas fa-exclamation-circle error-icon"></i><span th:errors="*{description}"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+          <a th:href="@{/recipes}" class="btn btn-outline-secondary me-md-2">
+            <i class="fas fa-times me-1"></i> Cancel
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i> Save Recipe
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+    
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
