@@ -1,370 +1,397 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>My Recipes</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>My Recipes</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-ENjdO4Dr2bkBIFxQpeoFGhxRCap+u9gqE1Z+u6U6U0E5q3WMQVhZ8WvCWPIPm49"
-    crossorigin="anonymous"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-  
-  <style>
-    :root {
-      --primary-color: #ff7043;
-      --primary-dark: #e64a19;
-      --primary-light: #ffccbc;
-      --accent-color: #4caf50;
-      --text-primary: #333333;
-      --text-secondary: #757575;
-      --bg-light: #f5f7fa;
-      --bg-white: #ffffff;
-      --shadow: 0 4px 12px rgba(0,0,0,0.08);
-      --transition: all 0.3s ease;
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      color: var(--text-primary);
-      background-color: var(--bg-light);
-      line-height: 1.6;
-    }
-    
-    .navbar {
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      box-shadow: var(--shadow);
-      padding: 0.8rem 0;
-    }
-    
-    .navbar-brand {
-      font-weight: 600;
-      font-size: 1.25rem;
-      letter-spacing: 0.5px;
-    }
-    
-    .navbar-brand i {
-      color: #fff;
-      font-size: 1.4rem;
-      vertical-align: middle;
-    }
-    
-    .btn-add-recipe {
-      background-color: var(--bg-white);
-      color: var(--primary-dark);
-      border: none;
-      border-radius: 8px;
-      font-weight: 500;
-      padding: 0.6rem 1.2rem;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .btn-add-recipe:hover {
-      background-color: rgba(255, 255, 255, 0.9);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      color: var(--primary-dark);
-    }
-    
-    .recipe-header {
-      background: linear-gradient(180deg, var(--bg-light) 0%, rgba(245, 247, 250, 0.8) 100%);
-      padding: 3rem 0 2rem;
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      text-align: center;
-    }
-    
-    .recipe-header h1 {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--primary-dark);
-    }
-    
-    .recipe-header p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-    }
-    
-    .card {
-      border: none;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      margin-bottom: 2rem;
-      background-color: var(--bg-white);
-      position: relative;
-    }
-    
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-      border-radius: 12px 12px 0 0;
-    }
-    
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-    }
-    
-    .card-body {
-      padding: 1.8rem;
-    }
-    
-    .card-title {
-      font-weight: 600;
-      color: var(--primary-dark);
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
-    }
-    
-    .difficulty-badge {
-      padding: 0.4rem 1rem;
-      font-weight: 500;
-      font-size: 0.75rem;
-      letter-spacing: 0.5px;
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    
-    .difficulty-badge i {
-      margin-right: 0.4rem;
-    }
-    
-    .difficulty-badge.Easy { 
-      background-color: rgba(76, 175, 80, 0.1);
-      color: #28a745;
-      border: 1px solid rgba(76, 175, 80, 0.2);
-    }
-    
-    .difficulty-badge.Medium { 
-      background-color: rgba(255, 193, 7, 0.1);
-      color: #d39e00;
-      border: 1px solid rgba(255, 193, 7, 0.2);
-    }
-    
-    .difficulty-badge.Hard { 
-      background-color: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
-      border: 1px solid rgba(220, 53, 69, 0.2);
-    }
-    
-    .card-text {
-      margin-bottom: 0.8rem;
-      color: var(--text-secondary);
-    }
-    
-    .card-footer {
-      background-color: rgba(245, 247, 250, 0.7);
-      border-top: 1px solid rgba(0,0,0,0.05);
-      padding: 1rem 1.8rem;
-    }
-    
-    .recipe-actions {
-      display: flex;
-      gap: 0.8rem;
-    }
-    
-    .btn-outline-primary {
-      color: var(--primary-color);
-      border-color: var(--primary-light);
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .btn-outline-primary:hover {
-      background-color: var(--primary-color);
-      border-color: var(--primary-color);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(255, 112, 67, 0.2);
-    }
-    
-    .btn-outline-danger {
-      color: #dc3545;
-      border-color: rgba(220, 53, 69, 0.3);
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .btn-outline-danger:hover {
-      background-color: #dc3545;
-      border-color: #dc3545;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
-    }
-    
-    .empty-state {
-      background-color: var(--bg-white);
-      border-radius: 12px;
-      padding: 4rem 2rem;
-      text-align: center;
-      box-shadow: var(--shadow);
-      margin: 3rem auto;
-      max-width: 600px;
-    }
-    
-    .empty-state i {
-      color: var(--primary-light);
-      margin-bottom: 1.5rem;
-    }
-    
-    .empty-state h3 {
-      color: var(--primary-dark);
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    
-    .empty-state p {
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-    }
-    
-    .btn-primary {
-      background-color: var(--accent-color);
-      border-color: var(--accent-color);
-      padding: 0.75rem 1.5rem;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      transition: var(--transition);
-      text-transform: uppercase;
-      font-size: 0.875rem;
-      display: inline-flex;
-      align-items: center;
-    }
-    
-    .btn-primary:hover {
-      background-color: #43a047;
-      border-color: #43a047;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
-    }
-    
-    .time-info {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.8rem;
-    }
-    
-    .time-info i {
-      color: var(--primary-color);
-      margin-right: 0.5rem;
-      font-size: 1rem;
-    }
-    
-    .date-info {
-      display: flex;
-      align-items: center;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-    
-    .date-info i {
-      margin-right: 0.5rem;
-      color: var(--text-secondary);
-    }
-    
-    .recipe-count {
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    
-    .recipe-count span {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-  </style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-ENjdO4Dr2bkBIFxQpeoFGhxRCap+u9gqE1Z+u6U6U0E5q3WMQVhZ8WvCWPIPm49" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+	<style>
+		:root {
+			--primary-color: #ff7043;
+			--primary-dark: #e64a19;
+			--primary-light: #ffccbc;
+			--accent-color: #4caf50;
+			--text-primary: #333333;
+			--text-secondary: #757575;
+			--bg-light: #f5f7fa;
+			--bg-white: #ffffff;
+			--shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+			--transition: all 0.3s ease;
+		}
+
+		body {
+			font-family: 'Poppins', sans-serif;
+			color: var(--text-primary);
+			background-color: var(--bg-light);
+			line-height: 1.6;
+		}
+
+		.navbar {
+			background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+			box-shadow: var(--shadow);
+			padding: 0.8rem 0;
+		}
+
+		.navbar-brand {
+			font-weight: 600;
+			font-size: 1.25rem;
+			letter-spacing: 0.5px;
+		}
+
+		.navbar-brand i {
+			color: #fff;
+			font-size: 1.4rem;
+			vertical-align: middle;
+		}
+
+		.btn-add-recipe {
+			background-color: var(--bg-white);
+			color: var(--primary-dark);
+			border: none;
+			border-radius: 8px;
+			font-weight: 500;
+			padding: 0.6rem 1.2rem;
+			transition: var(--transition);
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-add-recipe:hover {
+			background-color: rgba(255, 255, 255, 0.9);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+			color: var(--primary-dark);
+		}
+
+		.recipe-header {
+			background: linear-gradient(180deg, var(--bg-light) 0%, rgba(245, 247, 250, 0.8) 100%);
+			padding: 3rem 0 2rem;
+			margin-bottom: 2.5rem;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+			text-align: center;
+		}
+
+		.recipe-header h1 {
+			font-weight: 600;
+			margin-bottom: 0.5rem;
+			color: var(--primary-dark);
+		}
+
+		.recipe-header p {
+			color: var(--text-secondary);
+			font-size: 1.1rem;
+		}
+
+		.card {
+			border: none;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: var(--shadow);
+			transition: var(--transition);
+			margin-bottom: 2rem;
+			background-color: var(--bg-white);
+			position: relative;
+			cursor: pointer;
+		}
+
+		.card::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 4px;
+			background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+			border-radius: 12px 12px 0 0;
+		}
+
+		.card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+		}
+
+		.card-body {
+			padding: 1.8rem;
+		}
+
+		.card-title {
+			font-weight: 600;
+			color: var(--primary-dark);
+			margin-bottom: 1rem;
+			font-size: 1.25rem;
+		}
+
+		.difficulty-badge {
+			padding: 0.4rem 1rem;
+			font-weight: 500;
+			font-size: 0.75rem;
+			letter-spacing: 0.5px;
+			display: inline-flex;
+			align-items: center;
+			margin-bottom: 1rem;
+		}
+
+		.difficulty-badge i {
+			margin-right: 0.4rem;
+		}
+
+		.difficulty-badge.Easy {
+			background-color: rgba(76, 175, 80, 0.1);
+			color: #28a745;
+			border: 1px solid rgba(76, 175, 80, 0.2);
+		}
+
+		.difficulty-badge.Medium {
+			background-color: rgba(255, 193, 7, 0.1);
+			color: #d39e00;
+			border: 1px solid rgba(255, 193, 7, 0.2);
+		}
+
+		.difficulty-badge.Hard {
+			background-color: rgba(220, 53, 69, 0.1);
+			color: #dc3545;
+			border: 1px solid rgba(220, 53, 69, 0.2);
+		}
+
+		.card-text {
+			margin-bottom: 0.8rem;
+			color: var(--text-secondary);
+		}
+
+		.card-footer {
+			background-color: rgba(245, 247, 250, 0.7);
+			border-top: 1px solid rgba(0, 0, 0, 0.05);
+			padding: 1rem 1.8rem;
+		}
+
+		.recipe-actions {
+			display: flex;
+			gap: 0.8rem;
+		}
+
+		.btn-outline-primary {
+			color: var(--primary-color);
+			border-color: var(--primary-light);
+			transition: var(--transition);
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-outline-primary:hover {
+			background-color: var(--primary-color);
+			border-color: var(--primary-color);
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(255, 112, 67, 0.2);
+		}
+
+		.btn-outline-danger {
+			color: #dc3545;
+			border-color: rgba(220, 53, 69, 0.3);
+			transition: var(--transition);
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-outline-danger:hover {
+			background-color: #dc3545;
+			border-color: #dc3545;
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+		}
+
+		.empty-state {
+			background-color: var(--bg-white);
+			border-radius: 12px;
+			padding: 4rem 2rem;
+			text-align: center;
+			box-shadow: var(--shadow);
+			margin: 3rem auto;
+			max-width: 600px;
+		}
+
+		.empty-state i {
+			color: var(--primary-light);
+			margin-bottom: 1.5rem;
+		}
+
+		.empty-state h3 {
+			color: var(--primary-dark);
+			font-weight: 600;
+			margin-bottom: 1rem;
+		}
+
+		.empty-state p {
+			color: var(--text-secondary);
+			margin-bottom: 1.5rem;
+			font-size: 1.1rem;
+		}
+
+		.btn-primary {
+			background-color: var(--accent-color);
+			border-color: var(--accent-color);
+			padding: 0.75rem 1.5rem;
+			font-weight: 500;
+			letter-spacing: 0.5px;
+			transition: var(--transition);
+			text-transform: uppercase;
+			font-size: 0.875rem;
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-primary:hover {
+			background-color: #43a047;
+			border-color: #43a047;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+		}
+
+		.time-info {
+			display: flex;
+			align-items: center;
+			margin-bottom: 0.8rem;
+		}
+
+		.time-info i {
+			color: var(--primary-color);
+			margin-right: 0.5rem;
+			font-size: 1rem;
+		}
+
+		.date-info {
+			display: flex;
+			align-items: center;
+			color: var(--text-secondary);
+			font-size: 0.875rem;
+		}
+
+		.date-info i {
+			margin-right: 0.5rem;
+			color: var(--text-secondary);
+		}
+
+		.recipe-count {
+			font-weight: 500;
+			color: var(--text-secondary);
+			margin-bottom: 1.5rem;
+			text-align: center;
+		}
+
+		.recipe-count span {
+			color: var(--primary-color);
+			font-weight: 600;
+		}
+
+		.btn-view {
+			color: var(--accent-color);
+			border-color: var(--accent-color);
+			transition: var(--transition);
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-view:hover {
+			background-color: var(--accent-color);
+			border-color: var(--accent-color);
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
+		}
+	</style>
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand" th:href="@{/recipes}">
-        <i class="fas fa-utensils me-2"></i>Recipe Manager
-      </a>
-      <div>
-        <a class="btn btn-add-recipe" th:href="@{/recipes/new}">
-          <i class="fas fa-plus me-2"></i> New Recipe
-        </a>
-      </div>
-    </div>
-  </nav>
+	<nav class="navbar navbar-expand-lg navbar-dark main-nav">
+		<div class="container">
+			<a class="navbar-brand d-flex align-items-center" th:href="@{/recipes}">
+				<i class="fas fa-utensils me-2"></i><span>Recipe&nbsp;Manager</span>
+			</a>
+			<br>
+			<a class="btn btn-add-recipe d-flex align-items-center" th:href="@{/recipes/new}">
+				<i class="fas fa-plus me-2"></i>New&nbsp;Recipe
+			</a>
+		</div>
+		</div>
+	</nav>
 
-  <header class="recipe-header">
-    <div class="container">
-      <h1 class="display-5">My Recipe Collection</h1>
-      <p class="lead">Manage your favorite recipes in one place</p>
-    </div>
-  </header>
+	<header class="recipe-header">
+		<div class="container">
+			<h1 class="display-5">My Recipe Collection</h1>
+			<p class="lead">Manage your favorite recipes in one place</p>
+			<form action="/recipes/search" method="get">
+				<input type="text" name="keyword" placeholder="Search..." required />
+				<button type="submit">Search</button>
+			</form>
+			<a class="btn btn-outline-light ms-3" th:href="@{/recipes/stats}">
+				<i class="fas fa-chart-bar me-1"></i> Stats
+			</a>
 
-  <div class="container mb-5">
-    <p class="recipe-count" th:if="${not #lists.isEmpty(recipes)}">
-      Showing <span th:text="${#lists.size(recipes)}">0</span> recipes in your collection
-    </p>
-    
-    <div class="row" th:if="${not #lists.isEmpty(recipes)}">
-      <div class="col-md-6 col-lg-4" th:each="r : ${recipes}">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title" th:text="${r.name}">Recipe Name</h5>
-            <span class="difficulty-badge rounded-pill" th:classappend="${r.difficulty}">
-              <i class="fas" th:classappend="${r.difficulty == 'Easy' ? 'fa-smile' : (r.difficulty == 'Medium' ? 'fa-meh' : 'fa-frown')}"></i>
-              <span th:text="${r.difficulty}">Difficulty</span>
-            </span>
-            <div class="time-info">
-              <i class="far fa-clock"></i>
-              <span th:text="${r.cookingTime + ' minutes'}">Cooking Time</span>
-            </div>
-            <div class="date-info">
-              <i class="far fa-calendar-alt"></i>
-              <span>Added: <span th:text="${#temporals.format(r.dateAdded, 'MMM dd, yyyy')}">Date</span></span>
-            </div>
-          </div>
-          <div class="card-footer">
-            <div class="recipe-actions">
-              <a class="btn btn-sm btn-outline-primary"
-                 th:href="@{/recipes/edit/{id}(id=${r.id})}">
-                <i class="fas fa-edit me-1"></i> Edit
-              </a>
-              <a class="btn btn-sm btn-outline-danger"
-                 th:href="@{/recipes/delete/{id}(id=${r.id})}"
-                 onclick="return confirm('Are you sure you want to delete this recipe?');">
-                <i class="fas fa-trash-alt me-1"></i> Delete
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Empty state -->
-    <div class="empty-state" th:if="${#lists.isEmpty(recipes)}">
-      <i class="fas fa-book-open fa-4x"></i>
-      <h3>No recipes yet</h3>
-      <p>Start by adding your first delicious recipe to your collection</p>
-      <a class="btn btn-primary" th:href="@{/recipes/new}">
-        <i class="fas fa-plus me-2"></i> Add First Recipe
-      </a>
-    </div>
-  </div>
+		</div>
+	</header>
 
-  <!-- Bootstrap JS and dependencies -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<div class="container mb-5">
+		<p class="recipe-count" th:if="${not #lists.isEmpty(recipes)}">
+			Showing <span th:text="${#lists.size(recipes)}">0</span> recipes in your collection
+		</p>
+
+		<div class="row" th:if="${not #lists.isEmpty(recipes)}">
+			<div class="col-md-6 col-lg-4" th:each="r : ${recipes}">
+				<div class="card h-100">
+					<div class="card-body" th:onclick="'location.href=\'' + @{/recipes/{id}(id=${r.id})} + '\''">
+						<h5 class="card-title" th:text="${r.name}">Recipe Name</h5>
+						<span class="difficulty-badge rounded-pill" th:classappend="${r.difficulty}">
+							<i class="fas"
+								th:classappend="${r.difficulty == 'Easy' ? 'fa-smile' : (r.difficulty == 'Medium' ? 'fa-meh' : 'fa-frown')}"></i>
+							<span th:text="${r.difficulty}">Difficulty</span>
+						</span>
+						<div class="time-info">
+							<i class="far fa-clock"></i>
+							<span th:text="${r.cookingTime + ' minutes'}">Cooking Time</span>
+						</div>
+						<div class="date-info">
+							<i class="far fa-calendar-alt"></i>
+							<span>Added: <span
+									th:text="${#temporals.format(r.dateAdded, 'MMM dd, yyyy')}">Date</span></span>
+						</div>
+					</div>
+					<div class="card-footer">
+						<div class="recipe-actions">
+							<a class="btn btn-sm btn-view" th:href="@{/recipes/{id}(id=${r.id})}">
+								<i class="fas fa-eye me-1"></i> View
+							</a>
+							<a class="btn btn-sm btn-outline-primary" th:href="@{/recipes/edit/{id}(id=${r.id})}">
+								<i class="fas fa-edit me-1"></i> Edit
+							</a>
+							<a class="btn btn-sm btn-outline-danger" th:href="@{/recipes/delete/{id}(id=${r.id})}"
+								onclick="return confirm('Are you sure you want to delete this recipe?');">
+								<i class="fas fa-trash-alt me-1"></i> Delete
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="empty-state" th:if="${#lists.isEmpty(recipes)}">
+			<i class="fas fa-book-open fa-4x"></i>
+			<h3>No recipes yet</h3>
+			<p>Start by adding your first delicious recipe to your collection</p>
+			<a class="btn btn-primary" th:href="@{/recipes/new}">
+				<i class="fas fa-plus me-2"></i> Add First Recipe
+			</a>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
